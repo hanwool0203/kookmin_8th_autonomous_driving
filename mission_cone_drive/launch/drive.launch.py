@@ -68,6 +68,24 @@ def generate_launch_description():
         executable='lane_detector',
         name='lane_detector_node'
     )
+
+    centerlane_tracer_node = Node(
+        package='cam',
+        executable='centerlane_tracer',
+        name='centerlane_tracer_node'
+    )
+
+    target_lane_planner_node = Node(
+        package='cam',
+        executable='target_lane_planner',
+        name='target_lane_planner_node'
+    )
+
+    ultra_node = Node(
+        package='cam',
+        executable='ultra_node',
+        name='ultra_node'
+    )
     
     sign_detector_node = Node(
         package='cam',
@@ -120,6 +138,15 @@ def generate_launch_description():
         executable='checkerboard_detector',
         name='checkerboard_node'
     )
+
+    ultrasonic_node = Node(
+        package='xycar_ultrasonic',  # <-- 이 부분을 실제 초음파 센서 패키지 이름으로 바꿔주세요.
+        executable='xycar_ultrasonic', # <-- CMakeLists.txt에 정의된 실행 파일 이름
+        name='xycar_ultrasonic_node',  # 런치 파일에서 노드를 구별하기 위한 이름 (자유롭게 지정)
+        output='screen',
+        emulate_tty=True
+    )
+
     
     return LaunchDescription([
         params_declare,
@@ -128,8 +155,11 @@ def generate_launch_description():
         base_to_laser_tf,
         rviz2_node,  # RViz2를 사용하지 않을 경우 주석 처리
         cam_node,
-        # stanley_controller_node,
-        # lane_detector_node,
+        centerlane_tracer_node,
+        target_lane_planner_node,
+        ultra_node,
+        stanley_controller_node,
+        lane_detector_node,
         yolo_node,
         sign_detector_node,
         scan_rotator_node,
@@ -139,5 +169,6 @@ def generate_launch_description():
         #visualization_node, # Matplotlib을 사용하지 않을 경우 주석 처리
         rviz_visualizer_node, 
         checkerboard_node,
+        ultrasonic_node,
     ])
 

@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy, ReliabilityPolicy
-from mission_cone_interfaces.msg import ClusterData, ConeData
+from custom_interfaces.msg import ClusterData, ConeData
 from nav_msgs.msg import Path
 from geometry_msgs.msg import Point, PointStamped
 from std_msgs.msg import Float32MultiArray
@@ -10,9 +10,11 @@ from std_msgs.msg import ColorRGBA
 import math
 import numpy as np 
 
-FIRST_CONE_RANGE = 1.0
-LEFT_SECTOR_START, LEFT_SECTOR_END = 40.0, 110.0
-RIGHT_SECTOR_START, RIGHT_SECTOR_END = 250.0, 320.0
+LEFT_FIRST_CONE_RANGE = 0.8
+RIGHT_FIRST_CONE_RANGE = 0.8
+
+LEFT_SECTOR_START, LEFT_SECTOR_END = 30.0, 100.0
+RIGHT_SECTOR_START, RIGHT_SECTOR_END = 260.0, 350.0
 
 class RvizVisualizerNode(Node):
     def __init__(self):
@@ -62,7 +64,7 @@ class RvizVisualizerNode(Node):
         stamp = self.get_clock().now().to_msg()
 
         # 부채꼴을 그릴 마커 생성 내부 함수
-        def create_marker(sector_id, start_deg, end_deg, color):
+        def create_marker(sector_id, start_deg, end_deg, color,radius):
             marker = Marker()
             marker.header.frame_id = frame_id
             marker.header.stamp = stamp
@@ -78,10 +80,9 @@ class RvizVisualizerNode(Node):
             # 1. 원점 추가
             points.append(Point(x=0.0, y=0.0, z=0.0))
             
-            # 2. 호(arc)를 구성하는 점들 추가 (5도 간격으로 부드럽게)
             for deg in np.arange(start_deg, end_deg + 1, 5.0):
                 rad = np.deg2rad(deg)
-                points.append(Point(x=FIRST_CONE_RANGE * np.cos(rad), y=FIRST_CONE_RANGE * np.sin(rad), z=0.0))
+                points.append(Point(x=radius * np.cos(rad), y=radius * np.sin(rad), z=0.0))
             
             # 3. 마지막으로 원점을 다시 추가하여 닫힌 도형으로 만듦
             points.append(Point(x=0.0, y=0.0, z=0.0))
@@ -93,12 +94,13 @@ class RvizVisualizerNode(Node):
         left_color = ColorRGBA(r=0.0, g=1.0, b=0.0, a=0.8)
         right_color = ColorRGBA(r=0.0, g=0.0, b=1.0, a=0.8)
         
-        marker_array.markers.append(create_marker(0, LEFT_SECTOR_START, LEFT_SECTOR_END, left_color))
-        marker_array.markers.append(create_marker(1, RIGHT_SECTOR_START, RIGHT_SECTOR_END, right_color))
+        marker_array.markers.append(create_marker(0, LEFT_SECTOR_START, LEFT_SECTOR_END, left_color, LEFT_FIRST_CONE_RANGE))
+        marker_array.markers.append(create_marker(1, RIGHT_SECTOR_START, RIGHT_SECTOR_END, right_color, RIGHT_FIRST_CONE_RANGE))
+
         
         return marker_array
 
-    def create_marker_array(self, points, frame_id, ns, color):
+    def create_marker_array(self, points, frame_id, ns, color,scale=0.05, z_offset=0.0):
         marker_array = MarkerArray()
         
         # 이전 마커를 모두 삭제하는 명령을 먼저 보냅니다.
@@ -117,9 +119,8 @@ class RvizVisualizerNode(Node):
             marker.type = Marker.SPHERE
             marker.action = Marker.ADD
             marker.pose.position = point
-            marker.pose.position = point
-            marker.pose.position.z = 0.1
-            marker.scale.x, marker.scale.y, marker.scale.z = 0.05,0.05,0.05
+            marker.pose.position.z = z_offset 
+            marker.scale.x, marker.scale.y, marker.scale.z = scale, scale, scale 
             marker.color = color
             marker_array.markers.append(marker)
         return marker_array
@@ -129,8 +130,8 @@ class RvizVisualizerNode(Node):
         self.cluster_marker_pub.publish(markers)
 
     def cone_callback(self, msg: ConeData):
-        left_markers = self.create_marker_array(msg.left_cones, "laser_frame", "left_cones", ColorRGBA(r=1.0, g=1.0, b=0.0, a=1.0))
-        right_markers = self.create_marker_array(msg.right_cones, "laser_frame", "right_cones", ColorRGBA(r=0.0, g=1.0, b=1.0, a=1.0))
+        left_markers = self.create_marker_array(msg.left_cones, "laser_frame", "left_cones", ColorRGBA(r=1.0, g=1.0, b=0.0, a=1.0),scale=0.08, z_offset=0.12)
+        right_markers = self.create_marker_array(msg.right_cones, "laser_frame", "right_cones", ColorRGBA(r=0.0, g=1.0, b=1.0, a=1.0),scale=0.08, z_offset=0.12)
         self.left_cone_marker_pub.publish(left_markers)
         self.right_cone_marker_pub.publish(right_markers)
 

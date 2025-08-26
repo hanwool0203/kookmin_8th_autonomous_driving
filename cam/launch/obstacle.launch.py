@@ -37,18 +37,29 @@ def generate_launch_description():
     integrated_stanley_controller = Node(
             package='cam',
             executable='integrated_stanley_controller',
-            name='integrated_stanley_controller',
+            name='stanley_controller',
         )
     yolo_node = Node(
             package='cam',
             executable='yolo_node',
             name='yolo_node',
         )
-    yolo_lidar_fusion_node = Node(
-            package='lidar2cam_projector',
-            executable='yolo_lidar_fusion_node',
-            name='yolo_lidar_fusion_node'
+    ultra_node = Node(
+            package='cam',
+            executable='ultra_node',
+            name='ultra_node',
+        )     
+    target_lane_planner = Node(
+            package='cam',
+            executable='target_lane_planner',
+            name='target_lane_planner',
         )
+    centerlane_tracer = Node(
+            package='cam',
+            executable='centerlane_tracer',
+            name='centerlane_tracer',
+        )
+
 
     ultrasonic_node = Node(
         package='xycar_ultrasonic',  # <-- 이 부분을 실제 초음파 센서 패키지 이름으로 바꿔주세요.
@@ -57,6 +68,7 @@ def generate_launch_description():
         output='screen',
         emulate_tty=True
     )
+    #ros2 service call /start_track_driving std_srvs/srv/Trigger "{}"
 
 
     return LaunchDescription([
@@ -68,8 +80,10 @@ def generate_launch_description():
         lane_detector_node,
         integrated_stanley_controller,
         yolo_node,
-        yolo_lidar_fusion_node,
-
+        centerlane_tracer,
+        target_lane_planner,
+        
         ultrasonic_node,
+        ultra_node,
 
     ])

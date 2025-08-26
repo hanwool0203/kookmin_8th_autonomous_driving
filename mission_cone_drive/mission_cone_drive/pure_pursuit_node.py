@@ -42,7 +42,7 @@ class PurePursuitNode(Node):
             return
 
         angle_cmd = 0.0
-        speed = 5.0
+        speed = 10.0
         target_ra = None
 
         if len(msg.poses) > 1:  # 보간된 경로가 있을 때

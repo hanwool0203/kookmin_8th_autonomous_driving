@@ -30,6 +30,11 @@ def generate_launch_description():
         executable='sign_detector',
         name='SignDetector'
     )
+    yolo_node = Node(
+        package='cam',
+        executable='yolo_node',
+        name='yolo_node'
+    )
 
     scan_rotator_node = Node(
         package='mission_cone_drive',
@@ -60,15 +65,23 @@ def generate_launch_description():
         executable='rviz_visualizer_node',
         name='rviz_visualizer_node'
     )
+    checkerboard_node = Node(
+        package='mission_cone_drive',
+        executable='checkerboard_detector',
+        name='checkerboard_node'
+    )
     
     return LaunchDescription([
         lidar_to_rear_axle_tf,
         base_to_laser_tf,
         rviz2_node,  # RViz2를 사용하지 않을 경우 주석 처리
-        #sign_detector_node,
+        sign_detector_node,
         scan_rotator_node,
         preprocessing_node,
         path_planning_node,
         pure_pursuit_node,
         rviz_visualizer_node, 
+        checkerboard_node,
+        yolo_node,
+        
     ])

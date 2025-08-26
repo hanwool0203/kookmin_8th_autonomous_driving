@@ -8,7 +8,7 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
-from cam_interfaces.msg import Detections
+from custom_interfaces.msg import Detections
 import message_filters
 
 class SignDetector(Node):
@@ -23,7 +23,7 @@ class SignDetector(Node):
 
         # 카메라 이미지 토픽 구독 설정
         # --- 구독 동기화 ---
-        self.image_subscription = message_filters.Subscriber(self,Image,'/image_raw')
+        self.image_subscription = message_filters.Subscriber(self,Image,'/image_raw') # 이전 백파일 사용할 때는 '/stamped_image_raw'로 변경
         self.yolo_subscription = message_filters.Subscriber(self,Detections,'/yolo_detections')
 
         self.time_synchronizer = message_filters.ApproximateTimeSynchronizer(

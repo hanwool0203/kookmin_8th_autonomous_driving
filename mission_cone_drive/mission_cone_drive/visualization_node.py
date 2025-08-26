@@ -4,7 +4,7 @@ from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Path
 from geometry_msgs.msg import PointStamped
-from mission_cone_interfaces.msg import ClusterData, ConeData
+from custom_interfaces.msg import ClusterData, ConeData
 from std_msgs.msg import Float32MultiArray
 
 import numpy as np

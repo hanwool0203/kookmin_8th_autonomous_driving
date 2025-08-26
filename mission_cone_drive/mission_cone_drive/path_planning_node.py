@@ -3,7 +3,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Point, PoseStamped
 from nav_msgs.msg import Path
 from std_msgs.msg import String
-from mission_cone_interfaces.msg import ClusterData, ConeData
+from custom_interfaces.msg import ClusterData, ConeData
 
 import numpy as np
 from scipy.interpolate import CubicSpline
@@ -101,9 +101,10 @@ class PathPlanningNode(Node):
     
     def form_cone_groups(self, cluster_centers):
         # --- 부채꼴 영역 및 거리 상수 정의 ---
-        FIRST_CONE_RANGE = 1.0  # 첫 콘을 탐색할 최대 반경 (meter)
-        LEFT_SECTOR_START, LEFT_SECTOR_END = 40.0, 110.0    # 좌측 부채꼴 각도 (degree)
-        RIGHT_SECTOR_START, RIGHT_SECTOR_END = 250.0, 320.0  # 우측 부채꼴 각도 (degree)
+        LEFT_FIRST_CONE_RANGE = 0.8  
+        RIGHT_FIRST_CONE_RANGE = 0.8
+        LEFT_SECTOR_START, LEFT_SECTOR_END = 30.0, 100.0    # 좌측 부채꼴 각도 (degree)
+        RIGHT_SECTOR_START, RIGHT_SECTOR_END = 260.0, 350.0  # 우측 부채꼴 각도 (degree)
 
         left_seed = None
         right_seed = None
@@ -114,10 +115,6 @@ class PathPlanningNode(Node):
         for pt in cluster_centers:
             r = np.hypot(pt[0], pt[1])
 
-            # 최대 탐색 반경을 벗어나는 콘은 무시
-            if r > FIRST_CONE_RANGE:
-                continue
-
             # 각도를 0-360도 범위로 계산
             theta_rad = np.arctan2(pt[1], pt[0])
             deg = np.rad2deg(theta_rad)
@@ -125,12 +122,12 @@ class PathPlanningNode(Node):
                 deg += 360.0
 
             # 좌측 부채꼴 영역 확인
-            if LEFT_SECTOR_START <= deg <= LEFT_SECTOR_END:
+            if LEFT_SECTOR_START <= deg <= LEFT_SECTOR_END and r <= LEFT_FIRST_CONE_RANGE:
                 if r < min_left_r:
                     min_left_r = r
                     left_seed = pt
             # 우측 부채꼴 영역 확인
-            elif RIGHT_SECTOR_START <= deg <= RIGHT_SECTOR_END:
+            elif RIGHT_SECTOR_START <= deg <= RIGHT_SECTOR_END and r <= RIGHT_FIRST_CONE_RANGE:
                 if r < min_right_r:
                     min_right_r = r
                     right_seed = pt

@@ -27,8 +27,12 @@ setup(
             'lane_detector = cam.Lane_Detector:main',
             'sign_detector = cam.SignDetector:main',
             'integrated_stanley_controller = cam.Integrated_Stanley_Controller:main',
-            'adjustable_stanley_controller = cam.Adjustable_Stanley_Controller:main',
             'yolo_node = cam.yolo_node:main',
+            'centerlane_tracer = cam.centerlane_tracer:main',
+            'curve_subscriber = cam.curve_subscriber:main',
+            'topic_stamper = cam.topic_stamper:main',
+            'target_lane_planner = cam.target_lane_planner:main',
+            'ultra_node = cam.ultra_node:main',
         ],
     },
 )

@@ -51,17 +51,46 @@ def generate_launch_description():
         executable='camera_publisher',
         name='cam_node'
     )
+    yolo_node = Node(
+        package='cam',
+        executable='yolo_node',
+        name='yolo_node'
+    )
+
+    stanley_controller_node = Node(
+        package='cam',
+        executable='integrated_stanley_controller',
+        name='stanley_controller_node'
+    )
 
     lane_detector_node = Node(
         package='cam',
         executable='lane_detector',
         name='lane_detector_node'
     )
+
+    centerlane_tracer_node = Node(
+        package='cam',
+        executable='centerlane_tracer',
+        name='centerlane_tracer_node'
+    )
+
+    target_lane_planner_node = Node(
+        package='cam',
+        executable='target_lane_planner',
+        name='target_lane_planner_node'
+    )
+
+    ultra_node = Node(
+        package='cam',
+        executable='ultra_node',
+        name='ultra_node'
+    )
     
     sign_detector_node = Node(
         package='cam',
         executable='sign_detector',
-        name='SignDetector'
+        name='sign_detector_node'
     )
 
     scan_rotator_node = Node(
@@ -104,21 +133,34 @@ def generate_launch_description():
         executable='rviz_visualizer_node',
         name='rviz_visualizer_node'
     )
-
     checkerboard_node = Node(
         package='mission_cone_drive',
         executable='checkerboard_detector',
         name='checkerboard_node'
     )
+
+    ultrasonic_node = Node(
+        package='xycar_ultrasonic',
+        executable='xycar_ultrasonic',
+        name='xycar_ultrasonic_node',
+        output='screen',
+        emulate_tty=True
+    )
+
     
     return LaunchDescription([
-        #params_declare,
-        #driver_node,
+        params_declare,
+        driver_node,
         lidar_to_rear_axle_tf,
         base_to_laser_tf,
-        rviz2_node,  # RViz2를 사용하지 않을 경우 주석 처리
-        #cam_node,
-        #lane_detector_node,
+        # rviz2_node,  # RViz2를 사용하지 않을 경우 주석 처리
+        # cam_node,
+        centerlane_tracer_node,
+        target_lane_planner_node,
+        ultra_node,
+        stanley_controller_node,
+        lane_detector_node,
+        yolo_node,
         sign_detector_node,
         scan_rotator_node,
         preprocessing_node,
@@ -127,4 +169,6 @@ def generate_launch_description():
         #visualization_node, # Matplotlib을 사용하지 않을 경우 주석 처리
         rviz_visualizer_node, 
         checkerboard_node,
+        ultrasonic_node,
     ])
+

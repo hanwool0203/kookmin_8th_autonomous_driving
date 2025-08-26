@@ -4,7 +4,7 @@ from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Point
 from std_msgs.msg import String
-from mission_cone_interfaces.msg import ClusterData # 외부 인터페이스 패키지 사용
+from custom_interfaces.msg import ClusterData # 외부 인터페이스 패키지 사용
 
 import numpy as np
 from sklearn.cluster import DBSCAN
@@ -12,7 +12,7 @@ import math
 
 # --- 상수 정의 ---
 MAX_RANGE = 1.5
-MIN_RANGE_THRESHOLD = 0.25
+MIN_RANGE_THRESHOLD = 0.18
 DBSCAN_EPS = 0.15
 DBSCAN_MIN_SAMPLES = 5
 MAX_CONE_DIAMETER = 0.3
