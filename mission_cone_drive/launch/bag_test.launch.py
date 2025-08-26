@@ -70,18 +70,54 @@ def generate_launch_description():
         executable='checkerboard_detector',
         name='checkerboard_node'
     )
+    stanley_controller_node = Node(
+        package='cam',
+        executable='integrated_stanley_controller',
+        name='stanley_controller_node'
+    )
+
+    lane_detector_node = Node(
+        package='cam',
+        executable='lane_detector',
+        name='lane_detector_node'
+    )
+
+    centerlane_tracer_node = Node(
+        package='cam',
+        executable='centerlane_tracer',
+        name='centerlane_tracer_node'
+    )
+
+    target_lane_planner_node = Node(
+        package='cam',
+        executable='target_lane_planner',
+        name='target_lane_planner_node'
+    )
+
+    ultra_node = Node(
+        package='cam',
+        executable='ultra_node',
+        name='ultra_node'
+    )
     
     return LaunchDescription([
         lidar_to_rear_axle_tf,
         base_to_laser_tf,
-        rviz2_node,  # RViz2를 사용하지 않을 경우 주석 처리
-        sign_detector_node,
+        rviz2_node,
+
         scan_rotator_node,
         preprocessing_node,
         path_planning_node,
         pure_pursuit_node,
         rviz_visualizer_node, 
+
+        sign_detector_node,
         checkerboard_node,
         yolo_node,
+        centerlane_tracer_node,
+        target_lane_planner_node,
+        ultra_node,
+        stanley_controller_node,
+        lane_detector_node,
         
     ])

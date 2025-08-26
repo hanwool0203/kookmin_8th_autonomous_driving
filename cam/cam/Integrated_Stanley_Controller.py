@@ -20,7 +20,7 @@ class IntegratedStanleyController(Node):
         # ==============================================================
         # Subscriber
         self.xycar_state_sub = self.create_subscription(XycarState,'/xycar_state',self.xycar_state_callback,10,callback_group=self.control_callback_group)
-        self.obstacle_state_sub = self.create_subscription(ObstacleState,'/obstacle_state',self.obstacle_state_callback,10,callck_group=self.state_update_callback_group)
+        self.obstacle_state_sub = self.create_subscription(ObstacleState,'/obstacle_state',self.obstacle_state_callback,10,callback_group=self.state_update_callback_group)
         self.curve_subscription = self.create_subscription(Curve, '/center_curve',self.curve_callback,10,callback_group=self.state_update_callback_group)
 
         # Publisher
